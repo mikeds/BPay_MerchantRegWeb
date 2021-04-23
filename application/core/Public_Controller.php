@@ -102,6 +102,7 @@ class Public_Controller extends Global_Controller {
 		$postal_code,
 		$source_of_funds,
 		$nature_of_work,
+		$biz_type,
 		$id_type,
 		$id_no,
 		$id_expiration_date,
@@ -130,6 +131,7 @@ class Public_Controller extends Global_Controller {
 			'postal_code' 		=> $postal_code,
 			'source_of_funds' 	=> $source_of_funds,
 			'nature_of_work' 	=> $nature_of_work,
+			'biz_type'			=> $biz_type,
 			'id_type' 			=> $id_type,
 			'id_no' 			=> $id_no,
 			'id_expiration_date'=> $id_expiration_date

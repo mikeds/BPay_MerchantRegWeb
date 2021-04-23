@@ -6,7 +6,7 @@ function force_ssl() {
             TEST_URL, true 
         ),
         array(
-            DEV_URL, false 
+            DEV_URL, true 
         ),
         array(
             STAG_URL, true 
