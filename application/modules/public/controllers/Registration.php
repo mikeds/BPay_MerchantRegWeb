@@ -106,6 +106,7 @@ class Registration extends Public_Controller {
 					$postal_code,
 					$sof,
 					$now,
+					$biz_type,
 					$id_type,
 					$id_no,
 					$id_expiration_date,
