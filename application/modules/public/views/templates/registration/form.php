@@ -22,8 +22,8 @@
 							<div class="row">
 								<div class="col-xl-4">
 									<div class="form-group">
-										<label>Profile Picture <span class="text-danger">*</span></label>
-										<input type="file" class="form-control-file" id="profile-picture" name="profile-picture">
+										<label>Profile Picture </label>
+										<input type="file" class="form-control-file" id="profile-picture" name="profile-picture" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp">
 										<span class="text-danger"><?=form_error('profile-picture')?></span>
 									</div>
 								</div>
@@ -243,6 +243,16 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-xl-12">
+									<div class="form-group">
+										<label>Upload Documents <span class="text-danger">*</span></label>
+										<input type="file" class="form-control-file" id="files" name="files[]" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp,.docx,.doc,.pdf" multiple>
+										<span class="text-danger">Please upload the ff. files:<br></span>
+										<label class="biz-type-desc text-danger">Valid ID's and DTI or Mayor's Permit</label>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -283,7 +293,7 @@
 								<div class="col-xl-4">
 									<div class="form-group">
 										<label>ID Photo Front <span class="text-danger">*</span></label>
-										<input type="file" class="form-control-file" id="id-front" name="id-front">
+										<input type="file" class="form-control-file" id="id-front" name="id-front" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp">
 										<span class="text-danger"><?=form_error('id-front')?></span>
 									</div>
 								</div>
@@ -292,7 +302,7 @@
 								<div class="col-xl-4">
 									<div class="form-group">
 										<label>ID Photo Back <span class="text-danger">*</span></label>
-										<input type="file" class="form-control-file" id="id-back" name="id-back">
+										<input type="file" class="form-control-file" id="id-back" name="id-back" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp">
 										<span class="text-danger"><?=form_error('id-back')?></span>
 									</div>
 								</div>
