@@ -103,6 +103,7 @@ class Public_Controller extends Global_Controller {
 		$source_of_funds,
 		$nature_of_work,
 		$biz_type,
+		$files,
 		$id_type,
 		$id_no,
 		$id_expiration_date,
@@ -137,49 +138,96 @@ class Public_Controller extends Global_Controller {
 			'id_expiration_date'=> $id_expiration_date
 		);
 
-		if (isset($id_front['tmp_name'])) {
-			$id_front = curl_file_create(
-				$id_front['tmp_name'],
-				$id_front['type'],
-				$id_front['name']
-			);
+		if (!empty($profile_picture)) {
+			if (
+				$profile_picture['tmp_name'] !="" &&
+				$profile_picture['type'] != "" &&
+				$profile_picture['name'] != ""
+			) {
 
-			$post = array_merge(
-				$post,
-				array(
-					'id_front'=> $id_front
-				)
-			);
+				$profile_picture = curl_file_create(
+					$profile_picture['tmp_name'],
+					$profile_picture['type'],
+					$profile_picture['name']
+				);
+
+				$post = array_merge(
+					$post,
+					array(
+						'profile_picture'=> $profile_picture
+					)
+				);
+			}
 		}
 
-		if (isset($profile_picture['tmp_name'])) {
-			$profile_picture = curl_file_create(
-				$profile_picture['tmp_name'],
-				$profile_picture['type'],
-				$profile_picture['name']
-			);
+		if (!empty($id_front)) {
+			if (
+				$id_front['tmp_name'] !="" &&
+				$id_front['type'] != "" &&
+				$id_front['name'] != ""
+			) {
+				$id_front = curl_file_create(
+					$id_front['tmp_name'],
+					$id_front['type'],
+					$id_front['name']
+				);
 
-			$post = array_merge(
-				$post,
-				array(
-					'profile_picture'=> $profile_picture
-				)
-			);
+				$post = array_merge(
+					$post,
+					array(
+						'id_front'=> $id_front
+					)
+				);
+			}
 		}
 
-		if (isset($id_back['tmp_name'])) {
-			$id_back = curl_file_create(
-				$id_back['tmp_name'],
-				$id_back['type'],
-				$id_back['name']
-			);
+		if (!empty($id_back)) {
+			if (
+				$id_back['tmp_name'] !="" &&
+				$id_back['type'] != "" &&
+				$id_back['name'] != ""
+			) {
 
-			$post = array_merge(
-				$post,
-				array(
-					'id_back'=> $id_back
-				)
-			);
+				$id_back = curl_file_create(
+					$id_back['tmp_name'],
+					$id_back['type'],
+					$id_back['name']
+				);
+
+				$post = array_merge(
+					$post,
+					array(
+						'id_back'=> $id_back
+					)
+				);
+			}
+		}
+
+		if (isset($files['tmp_name'][0]) && !empty($files)) {
+			$i = 0;
+			
+			foreach($files['tmp_name'] as $file) {
+				if (
+					$files['tmp_name'][$i] !="" &&
+					$files['type'][$i] != "" &&
+					$files['name'][$i] != ""
+				) {
+					$file_item = curl_file_create(
+						$files['tmp_name'][$i],
+						$files['type'][$i],
+						$files['name'][$i]
+					);
+
+					$post = array_merge(
+						$post,
+						array(
+							"files[{$i}]" => $file_item
+						)
+					);
+				}
+
+				$i++;
+			}
 		}
 
 		$curl = curl_init();
@@ -188,8 +236,8 @@ class Public_Controller extends Global_Controller {
 		  CURLOPT_URL => BASE_URL_API . 'merchants/registration',
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_ENCODING => '',
-		  CURLOPT_MAXREDIRS => 10,
-		  CURLOPT_TIMEOUT => 0,
+		  CURLOPT_MAXREDIRS => 100,
+		  CURLOPT_TIMEOUT => 100,
 		  CURLOPT_FOLLOWLOCATION => true,
 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		  CURLOPT_CUSTOMREQUEST => 'POST',
@@ -202,9 +250,13 @@ class Public_Controller extends Global_Controller {
 		));
 		
 		$response = curl_exec($curl);
-		
+
+		if (curl_errno($curl)) {
+			$error_msg = curl_error($curl);
+		}
+
 		curl_close($curl);
-	
+
 		$response = json_decode($response);
 
 		if (isset($response->error_description)) {
@@ -223,7 +275,7 @@ class Public_Controller extends Global_Controller {
 
 		return array(
 			'error' 			=> true,
-			'error_description'	=> 'Unable to save registration info!'
+			'error_description'	=> isset($error_msg) ? $error_msg : 'Unable to save registration info!'
 		);
 	}
 

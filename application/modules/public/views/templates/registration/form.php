@@ -22,7 +22,7 @@
 							<div class="row">
 								<div class="col-xl-4">
 									<div class="form-group">
-										<label>Profile Picture <span class="text-danger">*</span></label>
+										<label>Profile Picture </label>
 										<input type="file" class="form-control-file" id="profile-picture" name="profile-picture">
 										<span class="text-danger"><?=form_error('profile-picture')?></span>
 									</div>
@@ -240,6 +240,16 @@
 										<label>Business Types <span class="text-danger">*</span></label>
 										<?=isset($biz_type) ? $biz_type : ""?>
 										<span class="text-danger"><?=form_error('biz-type')?></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xl-12">
+									<div class="form-group">
+										<label>Upload Documents <span class="text-danger">*</span></label>
+										<input type="file" class="form-control-file" id="files" name="files[]" multiple>
+										<span class="text-danger">Please upload the ff. files:<br></span>
+										<label class="biz-type-desc text-danger">Valid ID's and DTI or Mayor's Permit</label>
 									</div>
 								</div>
 							</div>

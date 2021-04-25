@@ -20,6 +20,7 @@ class Registration extends Public_Controller {
 	}
 
 	public function index() {
+		$this->add_scripts(base_url() . "assets/public/js/biz-type-selected.js", true);
 
 		$this->_data['form_url']		= base_url();
 		$this->_data['notification'] 	= $this->session->flashdata('notification');
@@ -67,6 +68,7 @@ class Registration extends Public_Controller {
 				$id_expiration_date	= $this->input->post("exp-date");
 				$id_front			= isset($_FILES['id-front']) ? $_FILES['id-front'] : "";
 				$id_back			= isset($_FILES['id-back']) ? $_FILES['id-back'] : "";
+				$files				= isset($_FILES['files']) ? $_FILES['files'] : "";
 
 
 				if ($password != $repeat_password) {
@@ -81,6 +83,11 @@ class Registration extends Public_Controller {
 
 				if (!isset($_FILES['id-back'])) {
 					$this->_data['notification'] = $this->generate_notification('warning', 'ID Photo Back is required!');
+					goto end;
+				}
+
+				if (!isset($_FILES['files'])) {
+					$this->_data['notification'] = $this->generate_notification('warning', 'Upload documents is required!');
 					goto end;
 				}
 
@@ -107,6 +114,7 @@ class Registration extends Public_Controller {
 					$sof,
 					$now,
 					$biz_type,
+					$files,
 					$id_type,
 					$id_no,
 					$id_expiration_date,
@@ -183,11 +191,10 @@ class Registration extends Public_Controller {
 		$this->_data['biz_type'] = $this->generate_selection(
 			"biz-type", 
 			$this->get_biz_types(), 
-			$biz_type, 
+			"", 
 			"id", 
-			"name", 
-			false,
-			"Please Select"
+			"name",
+			true
 		);
 
 		$this->_data['id_type'] = $this->generate_selection(
