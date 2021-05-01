@@ -247,7 +247,7 @@
 								<div class="col-xl-12">
 									<div class="form-group">
 										<label>Upload Documents <span class="text-danger">*</span></label>
-										<input type="file" class="form-control-file" id="files" name="files[]" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp,.docx,.doc,.pdf" multiple>
+										<input type="file" class="form-control-file" id="files" name="files[]" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp,.docx,.doc,.pdf,.xlsx" multiple>
 										<span class="text-danger">Please upload the ff. files:<br></span>
 										<label class="biz-type-desc text-danger">Valid ID's and DTI or Mayor's Permit</label>
 									</div>
