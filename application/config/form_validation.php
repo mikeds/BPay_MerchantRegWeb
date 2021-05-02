@@ -141,6 +141,11 @@ switch( strtolower(get_controller()) ) {
 					'field' => 'exp-date',
 					'label' => 'ID Expiration Date',
 					'rules'	=> 'trim|xss_clean|required'
+				),
+				array( 	
+					'field' => 'agreement-policy',
+					'label' => 'Terms and Condition, Privacy Policy and EULA',
+					'rules'	=> 'trim|xss_clean|required'
 				)
 			),
 		);

@@ -297,6 +297,16 @@
 									</div>
 								</div>
 							</div>
+							<br>
+							<div class="row">
+								<div class="col-xl-12">
+									<div class="form-group">
+										<input type="checkbox" id="agreement-policy" name="agreement-policy" value="1" <?=isset($post["agreement-policy"]) ? $post["agreement-policy"] : ""?>>
+										<label for="status">&nbsp; I accept the <a data-toggle="modal" href="#terms-and-condition">Terms and Condition</a>, <a data-toggle="modal" href="#privacy-policy">Privacy Policy</a> and <a data-toggle="modal" href="#eula">EULA </a></label>
+										<span class="text-danger"><?=form_error('agreement-policy')?></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -311,3 +321,4 @@
 		</form>
   	</div>
 </div>
+

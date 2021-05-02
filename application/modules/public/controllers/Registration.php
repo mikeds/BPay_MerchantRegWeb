@@ -67,6 +67,7 @@ class Registration extends Public_Controller {
 				$id_expiration_date	= $this->input->post("exp-date");
 				$id_front			= isset($_FILES['id-front']) ? $_FILES['id-front'] : "";
 				$id_back			= isset($_FILES['id-back']) ? $_FILES['id-back'] : "";
+				$agreement_policy	= $this->input->post("agreement-policy");
 
 
 				if ($password != $repeat_password) {
