@@ -70,6 +70,8 @@ class Registration extends Public_Controller {
 				$id_back			= isset($_FILES['id-back']) ? $_FILES['id-back'] : "";
 				$files				= isset($_FILES['files']) ? $_FILES['files'] : "";
 
+				$agreement_policy	= $this->input->post("agreement-policy");
+
 
 				if ($password != $repeat_password) {
 					$this->_data['notification'] = $this->generate_notification('warning', 'Password confirmation is not the same!');
