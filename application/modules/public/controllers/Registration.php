@@ -33,6 +33,7 @@ class Registration extends Public_Controller {
 		$id_type		= "";
 
 		if ($_POST) {
+
 			$this->_data['post'] = $_POST;
 
 			$province_id 	= $this->input->post("province");
@@ -69,6 +70,7 @@ class Registration extends Public_Controller {
 				$id_front			= isset($_FILES['id-front']) ? $_FILES['id-front'] : "";
 				$id_back			= isset($_FILES['id-back']) ? $_FILES['id-back'] : "";
 				$files				= isset($_FILES['files']) ? $_FILES['files'] : "";
+				$enroll_as_agent	= $this->input->post("enroll-as-agent");
 
 				$agreement_policy	= $this->input->post("agreement-policy");
 
@@ -123,14 +125,43 @@ class Registration extends Public_Controller {
 					$id_front,
 					$id_back
 				);
-				
 
 				if (isset($response['error'])) {
 					if ($response['error']) {
 						$this->_data['notification'] = $this->generate_notification('warning', $response['error_description']);
 						goto end;
 					} else {
-						$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered!"));
+						if($enroll_as_agent == 1){
+							$agent_enroll_response = $this->set_register_agent(
+								$profile_picture,
+								$first_name,
+								$middle_name,
+								$last_name,
+								$email_address,
+								$password,
+								$mobile_no,
+								$dob,
+								$pob,
+								$gender,
+								$house_no,
+								$street,
+								$barangay,
+								$city,
+								$country_id,
+								$province_id,
+								$postal_code,
+								$sof,
+								$now,
+								$id_type,
+								$id_no,
+								$id_expiration_date,
+								$id_front,
+								$id_back
+							);
+								$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered to merchant and agent account!"));
+						}else{
+							$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered!"));
+						}	
 						redirect($this->_data['form_url']);
 					}
 				}
