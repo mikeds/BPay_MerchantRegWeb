@@ -279,6 +279,174 @@ class Public_Controller extends Global_Controller {
 		);
 	}
 
+	public function set_register_agent(
+		$profile_picture,
+		$first_name,
+		$middle_name,
+		$last_name,
+		$email_address,
+		$password,
+		$mobile_no,
+		$dob,
+		$pob,
+		$gender,
+		$house_no,
+		$street,
+		$brgy,
+		$city,
+		$country_id,
+		$province_id,
+		$postal_code,
+		$source_of_funds,
+		$nature_of_work,
+		$id_type,
+		$id_no,
+		$id_expiration_date,
+		$id_front,
+		$id_back
+	) {
+
+		$token = $this->token_request();
+
+		$post = array(
+			'first_name' 		=> $first_name,
+			'middle_name' 		=> $middle_name,
+			'last_name' 		=> $last_name,
+			'email_address' 	=> $email_address,
+			'password' 			=> $password,
+			'mobile_no' 		=> $mobile_no,
+			'dob' 				=> $dob,
+			'pob' 				=> $pob,
+			'gender' 			=> $gender,
+			'house_no' 			=> $house_no,
+			'street' 			=> $street,
+			'brgy' 				=> $brgy,
+			'city' 				=> $city,
+			'country_id' 		=> $country_id,
+			'province_id' 		=> $province_id,
+			'postal_code' 		=> $postal_code,
+			'source_of_funds' 	=> $source_of_funds,
+			'nature_of_work' 	=> $nature_of_work,
+			'id_type' 			=> $id_type,
+			'id_no' 			=> $id_no,
+			'id_expiration_date'=> $id_expiration_date
+		);
+
+		if (!empty($profile_picture)) {
+			if (
+				$profile_picture['tmp_name'] !="" &&
+				$profile_picture['type'] != "" &&
+				$profile_picture['name'] != ""
+			) {
+
+				$profile_picture = curl_file_create(
+					$profile_picture['tmp_name'],
+					$profile_picture['type'],
+					$profile_picture['name']
+				);
+
+				$post = array_merge(
+					$post,
+					array(
+						'profile_picture'=> $profile_picture
+					)
+				);
+			}
+		}
+
+		if (!empty($id_front)) {
+			if (
+				$id_front['tmp_name'] !="" &&
+				$id_front['type'] != "" &&
+				$id_front['name'] != ""
+			) {
+				$id_front = curl_file_create(
+					$id_front['tmp_name'],
+					$id_front['type'],
+					$id_front['name']
+				);
+
+				$post = array_merge(
+					$post,
+					array(
+						'id_front'=> $id_front
+					)
+				);
+			}
+		}
+
+		if (!empty($id_back)) {
+			if (
+				$id_back['tmp_name'] !="" &&
+				$id_back['type'] != "" &&
+				$id_back['name'] != ""
+			) {
+
+				$id_back = curl_file_create(
+					$id_back['tmp_name'],
+					$id_back['type'],
+					$id_back['name']
+				);
+
+				$post = array_merge(
+					$post,
+					array(
+						'id_back'=> $id_back
+					)
+				);
+			}
+		}
+
+
+		$curl = curl_init();
+		
+		curl_setopt_array($curl, array(
+		  CURLOPT_URL => BASE_URL_API . 'agents/registration',
+		  CURLOPT_RETURNTRANSFER => true,
+		  CURLOPT_ENCODING => '',
+		  CURLOPT_MAXREDIRS => 100,
+		  CURLOPT_TIMEOUT => 100,
+		  CURLOPT_FOLLOWLOCATION => true,
+		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		  CURLOPT_CUSTOMREQUEST => 'POST',
+		  CURLOPT_POSTFIELDS => $post,
+		  CURLOPT_HTTPHEADER => array(
+			'Authorization: Bearer ' . $token,
+			'Accept: */*',
+			'Content-Type: multipart/form-data;'
+		  ),
+		));
+		
+		$response = curl_exec($curl);
+
+		if (curl_errno($curl)) {
+			$error_msg = curl_error($curl);
+		}
+
+		curl_close($curl);
+
+		$response = json_decode($response);
+
+		if (isset($response->error_description)) {
+			return array(
+				'error' 			=> true,
+				'error_description'	=> $response->error_description
+			);
+		}
+
+		if (isset($response->message)) {
+			return array(
+				'error' 	=> false,
+				'message'	=> $response->message
+			);
+		}
+
+		return array(
+			'error' 			=> true,
+			'error_description'	=> isset($error_msg) ? $error_msg : 'Unable to save registration info!'
+		);
+	}
+	
 	public function get_countries() {
 		$curl = curl_init();
 
