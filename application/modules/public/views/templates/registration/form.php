@@ -311,7 +311,16 @@
 							<div class="row">
 								<div class="col-xl-12">
 									<div class="form-group">
-										<input type="checkbox" id="agreement-policy" name="agreement-policy" value="1" <?=isset($post["agreement-policy"]) ? $post["agreement-policy"] : ""?>>
+										<input type="checkbox" id="enroll-as-agent" name="enroll-as-agent" value="1" <?=isset($post["enroll-as-agent"]) ? ($post["enroll-as-agent"] == 1 ? 'checked' : "" ): ""?>>
+										<label for="status">&nbsp; Enroll me as an Agent as well</label>
+										<span class="text-danger"><?=form_error('enroll-as-agent')?></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xl-12">
+									<div class="form-group">
+										<input type="checkbox" id="agreement-policy" name="agreement-policy" value="1" <?=isset($post["agreement-policy"]) ? ($post["agreement-policy"] == 1 ? "checked" : "") : ""?>>
 										<label for="status">&nbsp; I accept the <a data-toggle="modal" href="#terms-and-condition">Terms and Condition</a>, <a data-toggle="modal" href="#privacy-policy">Privacy Policy</a> and <a data-toggle="modal" href="#eula">EULA </a></label>
 										<span class="text-danger"><?=form_error('agreement-policy')?></span>
 									</div>
