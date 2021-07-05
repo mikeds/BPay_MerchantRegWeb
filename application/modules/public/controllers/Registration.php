@@ -20,6 +20,7 @@ class Registration extends Public_Controller {
 	}
 
 	public function index() {
+		$this->load->model('last_inserted_user_model', 'last_inserted_user');		
 		$this->add_scripts(base_url() . "assets/public/js/biz-type-selected.js", true);
 
 		$this->_data['form_url']		= base_url();
@@ -159,10 +160,17 @@ class Registration extends Public_Controller {
 								$id_back
 							);
 								$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered to merchant and agent account!"));
+								redirect($this->_data['form_url']);
 						}else{
-							$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered!"));
+							$last_user = array(
+								'user_type' 		=> 1, // merchant
+								'user_phone_no'		=> $mobile_no
+							);
+							$this->last_inserted_user->insert($last_user);
+							redirect('http://developer.globelabs.com.ph/dialog/oauth/AMM8H69MMeCb5Tp4nBiMnGC8kM7MHMba');
+							//$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered!"));
 						}	
-						redirect($this->_data['form_url']);
+						
 					}
 				}
 
@@ -242,6 +250,37 @@ class Registration extends Public_Controller {
 
 		$this->_data['title']  = "Merchant Registration";
 		$this->set_template("registration/form", $this->_data);
+	}
+
+	public function otp_validation($mobile_no=0){
+		$this->_data['form_url']		= base_url().'otp-validation/'.$mobile_no;
+		$this->_data['notification'] 	= $this->session->flashdata('notification');
+		$this->_data['title']  = "OTP Validation";
+
+		$otp_code = $this->input->post('otp-code');
+		if(empty($otp_code)){
+			$response = $this->otp_request(
+				$mobile_no,
+				'reg',
+				'merchant'
+			); 
+		}
+		if($_POST){
+			$submit_response = $this->otp_submit(
+				$otp_code,
+				$mobile_no
+			);
+
+			if (isset($submit_response['message'])) {
+				$this->session->set_flashdata('notification', $this->generate_notification('success', $submit_response['message']));
+				redirect(base_url());
+			}
+			if(isset($submit_response['error_description'])){
+			$this->session->set_flashdata('notification', $this->generate_notification('warning', $submit_response['error_description']));
+			}
+		}
+
+		$this->set_template("registration/otp_form", $this->_data);
 	}
 }
 

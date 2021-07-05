@@ -82,6 +82,110 @@ class Public_Controller extends Global_Controller {
 		}
 	}
 
+	public function otp_request($mobile_no, $module, $user_type) {
+		$token = $this->token_request();
+
+		$post = array(
+			'mobile_no'	=> $mobile_no,
+			'module'	=> $module,
+			'user_type'	=> $user_type
+		);
+
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => BASE_URL_API . 'otp/request',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => '{
+                "mobile_no": "'.$mobile_no.'",
+                "module": "'.$module.'",
+				"user_type" : "'.$user_type.'"
+            }',
+			CURLOPT_HTTPHEADER => array(
+			  'Authorization: Bearer ' . $token,
+			  'Content-Type: application/json',
+			),
+		  ));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		
+		$response = json_decode($response);
+
+		if (isset($response->error_description)) {
+			return array(
+				'error' 			=> true,
+				'error_description'	=> $response->error_description
+			);
+		}
+
+		if (isset($response->message)) {
+			return array(
+				'error' 	=> false,
+				'message'	=> $response->message,
+				'response'	=> $response->response
+			);
+		}
+	}
+
+	public function otp_submit($otp, $mobile_no) {
+		$token = $this->token_request();
+
+		$post = array(
+			'otp'		=> $otp,
+			'mobile_no'	=> $mobile_no
+		);
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => BASE_URL_API . 'otp/submit',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => '{
+                "otp": "'.$otp.'",
+                "mobile_no": "'.$mobile_no.'"
+            }',
+			CURLOPT_HTTPHEADER => array(
+			  'Authorization: Bearer ' . $token,
+			  'Content-Type: application/json',
+			),
+		  ));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		
+		$response = json_decode($response);
+
+		if (isset($response->error_description)) {
+			return array(
+				'error' 			=> true,
+				'error_description'	=> $response->error_description
+			);
+		}
+
+		if (isset($response->message)) {
+			return array(
+				'error' 	=> false,
+				'message'	=> $response->message
+			);
+		}
+	}
+
 	public function set_register_merchant(
 		$profile_picture,
 		$first_name,
@@ -269,6 +373,7 @@ class Public_Controller extends Global_Controller {
 		if (isset($response->message)) {
 			return array(
 				'error' 	=> false,
+				'id'		=> $response->id,
 				'message'	=> $response->message
 			);
 		}
