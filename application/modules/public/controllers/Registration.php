@@ -20,6 +20,7 @@ class Registration extends Public_Controller {
 	}
 
 	public function index() {
+		$this->load->model('last_inserted_user_model', 'last_inserted_user');		
 		$this->add_scripts(base_url() . "assets/public/js/biz-type-selected.js", true);
 
 		$this->_data['form_url']		= base_url();
@@ -29,7 +30,6 @@ class Registration extends Public_Controller {
 		$province_id 	= "";
 		$sof			= "";
 		$now			= "";
-		$biz_type		= "";
 		$id_type		= "";
 
 		if ($_POST) {
@@ -39,7 +39,6 @@ class Registration extends Public_Controller {
 			$province_id 	= $this->input->post("province");
 			$sof			= $this->input->post("sof");
 			$now			= $this->input->post("now");
-			$biz_type		= $this->input->post("biz-type");
 			$id_type		= $this->input->post("id-type");
 
 			if ($this->form_validation->run('validate')) {
@@ -58,19 +57,16 @@ class Registration extends Public_Controller {
 				$street				= $this->input->post("street");
 				$barangay			= $this->input->post("barangay");
 				$city				= $this->input->post("city");
-				// $country_id			= $this->input->post("country");
 				$province_id		= $this->input->post("province");
 				$postal_code		= $this->input->post("postal-code");
 				$sof				= $this->input->post("sof");
 				$now				= $this->input->post("now");
-				$biz_type			= $this->input->post("biz-type");
 				$id_type			= $this->input->post("id-type");
 				$id_no				= $this->input->post("id-no");
 				$id_expiration_date	= $this->input->post("exp-date");
+				$agent_code			= $this->input->post("agent-code");
 				$id_front			= isset($_FILES['id-front']) ? $_FILES['id-front'] : "";
 				$id_back			= isset($_FILES['id-back']) ? $_FILES['id-back'] : "";
-				$files				= isset($_FILES['files']) ? $_FILES['files'] : "";
-				$enroll_as_agent	= $this->input->post("enroll-as-agent");
 
 				$agreement_policy	= $this->input->post("agreement-policy");
 
@@ -90,14 +86,11 @@ class Registration extends Public_Controller {
 					goto end;
 				}
 
-				if (!isset($_FILES['files'])) {
-					$this->_data['notification'] = $this->generate_notification('warning', 'Upload documents is required!');
-					goto end;
-				}
+
 
 				$password = hash("sha256", $password);
 
-				$response = $this->set_register_merchant(
+				$response = $this->set_register_client(
 					$profile_picture,
 					$first_name,
 					$middle_name,
@@ -117,53 +110,27 @@ class Registration extends Public_Controller {
 					$postal_code,
 					$sof,
 					$now,
-					$biz_type,
-					$files,
 					$id_type,
 					$id_no,
 					$id_expiration_date,
 					$id_front,
-					$id_back
+					$id_back,
+					$agent_code
 				);
 
 				if (isset($response['error'])) {
 					if ($response['error']) {
 						$this->_data['notification'] = $this->generate_notification('warning', $response['error_description']);
 						goto end;
-					} else {
-						if($enroll_as_agent == 1){
-							$agent_enroll_response = $this->set_register_agent(
-								$profile_picture,
-								$first_name,
-								$middle_name,
-								$last_name,
-								$email_address,
-								$password,
-								$mobile_no,
-								$dob,
-								$pob,
-								$gender,
-								$house_no,
-								$street,
-								$barangay,
-								$city,
-								$country_id,
-								$province_id,
-								$postal_code,
-								$sof,
-								$now,
-								$id_type,
-								$id_no,
-								$id_expiration_date,
-								$id_front,
-								$id_back
-							);
-								$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered to merchant and agent account!"));
-						}else{
-							$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered!"));
-						}	
-						redirect($this->_data['form_url']);
-					}
+					}else{
+						$last_user = array(
+							'user_type' 		=> 2, // client
+							'user_phone_no'		=> $mobile_no
+						);
+						$this->last_inserted_user->insert($last_user);
+						redirect('http://developer.globelabs.com.ph/dialog/oauth/AMM8H69MMeCb5Tp4nBiMnGC8kM7MHMba');
+					} 
+
 				}
 
 				$this->_data['notification'] = $this->generate_notification('warning', "Unable to save registration to server!");
@@ -181,15 +148,6 @@ class Registration extends Public_Controller {
 			"name", 
 			true
 		);
-
-		// $this->_data['country']	= $this->generate_selection(
-		// 	"country", 
-		// 	$this->get_countries(), 
-		// 	$country, 
-		// 	"id", 
-		// 	"name", 
-		// 	true
-		// );
 		
 		$this->_data['province']	= $this->generate_selection(
 			"province", 
@@ -221,15 +179,6 @@ class Registration extends Public_Controller {
 			"Please Select"
 		);
 
-		$this->_data['biz_type'] = $this->generate_selection(
-			"biz-type", 
-			$this->get_biz_types(), 
-			"", 
-			"id", 
-			"name",
-			true
-		);
-
 		$this->_data['id_type'] = $this->generate_selection(
 			"id-type", 
 			$this->get_id_types(), 
@@ -240,8 +189,38 @@ class Registration extends Public_Controller {
 			"Please Select"
 		);
 
-		$this->_data['title']  = "Merchant Registration";
+		$this->_data['title']  = "Client Registration";
 		$this->set_template("registration/form", $this->_data);
+	}
+
+	public function otp_validation($mobile_no=0){
+		$this->_data['form_url']		= base_url().'otp-validation/'.$mobile_no;
+		$this->_data['notification'] 	= $this->session->flashdata('notification');
+		$this->_data['title']  = "OTP Validation";
+		$otp_code = $this->input->post('otp-code');
+		if(empty($otp_code)){
+			$response = $this->otp_request(
+				$mobile_no,
+				'reg',
+				'client'
+			); 
+		}
+		if($_POST){
+			$submit_response = $this->otp_submit(
+				$otp_code,
+				$mobile_no
+			);
+
+			if (isset($submit_response['message'])) {
+				$this->session->set_flashdata('notification', $this->generate_notification('success', $submit_response['message']));
+				redirect(base_url());
+			}
+			if(isset($submit_response['error_description'])){
+			$this->session->set_flashdata('notification', $this->generate_notification('warning', $submit_response['error_description']));
+			}
+		}
+
+		$this->set_template("registration/otp_form", $this->_data);
 	}
 }
 

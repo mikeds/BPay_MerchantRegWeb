@@ -82,7 +82,111 @@ class Public_Controller extends Global_Controller {
 		}
 	}
 
-	public function set_register_merchant(
+	public function otp_request($mobile_no, $module, $user_type) {
+		$token = $this->token_request();
+
+		$post = array(
+			'mobile_no'	=> $mobile_no,
+			'module'	=> $module,
+			'user_type'	=> $user_type
+		);
+
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => BASE_URL_API . 'otp/request',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => '{
+                "mobile_no": "'.$mobile_no.'",
+                "module": "'.$module.'",
+				"user_type" : "'.$user_type.'"
+            }',
+			CURLOPT_HTTPHEADER => array(
+			  'Authorization: Bearer ' . $token,
+			  'Content-Type: application/json',
+			),
+		  ));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		
+		$response = json_decode($response);
+
+		if (isset($response->error_description)) {
+			return array(
+				'error' 			=> true,
+				'error_description'	=> $response->error_description
+			);
+		}
+
+		if (isset($response->message)) {
+			return array(
+				'error' 	=> false,
+				'message'	=> $response->message,
+				'response'	=> $response->response
+			);
+		}
+	}
+
+	public function otp_submit($otp, $mobile_no) {
+		$token = $this->token_request();
+
+		$post = array(
+			'otp'		=> $otp,
+			'mobile_no'	=> $mobile_no
+		);
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => BASE_URL_API . 'otp/submit',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => '{
+                "otp": "'.$otp.'",
+                "mobile_no": "'.$mobile_no.'"
+            }',
+			CURLOPT_HTTPHEADER => array(
+			  'Authorization: Bearer ' . $token,
+			  'Content-Type: application/json',
+			),
+		  ));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		
+		$response = json_decode($response);
+
+		if (isset($response->error_description)) {
+			return array(
+				'error' 			=> true,
+				'error_description'	=> $response->error_description
+			);
+		}
+
+		if (isset($response->message)) {
+			return array(
+				'error' 	=> false,
+				'message'	=> $response->message
+			);
+		}
+	}
+
+	public function set_register_client(
 		$profile_picture,
 		$first_name,
 		$middle_name,
@@ -102,40 +206,40 @@ class Public_Controller extends Global_Controller {
 		$postal_code,
 		$source_of_funds,
 		$nature_of_work,
-		$biz_type,
-		$files,
 		$id_type,
 		$id_no,
 		$id_expiration_date,
 		$id_front,
-		$id_back
+		$id_back,
+		$agent_code
 	) {
 
 		$token = $this->token_request();
 
 		$post = array(
-			'first_name' 		=> $first_name,
-			'middle_name' 		=> $middle_name,
-			'last_name' 		=> $last_name,
-			'email_address' 	=> $email_address,
-			'password' 			=> $password,
-			'mobile_no' 		=> $mobile_no,
-			'dob' 				=> $dob,
-			'pob' 				=> $pob,
-			'gender' 			=> $gender,
-			'house_no' 			=> $house_no,
-			'street' 			=> $street,
-			'brgy' 				=> $brgy,
-			'city' 				=> $city,
-			'country_id' 		=> $country_id,
-			'province_id' 		=> $province_id,
-			'postal_code' 		=> $postal_code,
-			'source_of_funds' 	=> $source_of_funds,
-			'nature_of_work' 	=> $nature_of_work,
-			'biz_type'			=> $biz_type,
-			'id_type' 			=> $id_type,
-			'id_no' 			=> $id_no,
-			'id_expiration_date'=> $id_expiration_date
+			'first_name' 			=> $first_name,
+			'middle_name' 			=> $middle_name,
+			'last_name' 			=> $last_name,
+			'email_address' 		=> $email_address,
+			'password' 				=> $password,
+			'mobile_no' 			=> $mobile_no,
+			'dob' 					=> $dob,
+			'pob' 					=> $pob,
+			'gender' 				=> $gender,
+			'house_no' 				=> $house_no,
+			'street' 				=> $street,
+			'brgy' 					=> $brgy,
+			'city' 					=> $city,
+			'country_id' 			=> $country_id,
+			'province_id' 			=> $province_id,
+			'postal_code' 			=> $postal_code,
+			'source_of_funds' 		=> $source_of_funds,
+			'nature_of_work' 		=> $nature_of_work,
+			'id_type' 				=> $id_type,
+			'id_no' 				=> $id_no,
+			'id_expiration_date'	=> $id_expiration_date,
+			'account_agent_code'	=> $agent_code,
+			'agent_code'		=> $agent_code
 		);
 
 		if (!empty($profile_picture)) {
@@ -203,37 +307,10 @@ class Public_Controller extends Global_Controller {
 			}
 		}
 
-		if (isset($files['tmp_name'][0]) && !empty($files)) {
-			$i = 0;
-			
-			foreach($files['tmp_name'] as $file) {
-				if (
-					$files['tmp_name'][$i] !="" &&
-					$files['type'][$i] != "" &&
-					$files['name'][$i] != ""
-				) {
-					$file_item = curl_file_create(
-						$files['tmp_name'][$i],
-						$files['type'][$i],
-						$files['name'][$i]
-					);
-
-					$post = array_merge(
-						$post,
-						array(
-							"files[{$i}]" => $file_item
-						)
-					);
-				}
-
-				$i++;
-			}
-		}
-
 		$curl = curl_init();
 		
 		curl_setopt_array($curl, array(
-		  CURLOPT_URL => BASE_URL_API . 'merchants/registration',
+		  CURLOPT_URL => BASE_URL_API . 'clients/registration',
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_ENCODING => '',
 		  CURLOPT_MAXREDIRS => 100,
@@ -269,6 +346,7 @@ class Public_Controller extends Global_Controller {
 		if (isset($response->message)) {
 			return array(
 				'error' 	=> false,
+				'id'		=> $response->id,
 				'message'	=> $response->message
 			);
 		}
@@ -329,7 +407,7 @@ class Public_Controller extends Global_Controller {
 			'nature_of_work' 	=> $nature_of_work,
 			'id_type' 			=> $id_type,
 			'id_no' 			=> $id_no,
-			'id_expiration_date'=> $id_expiration_date
+			'id_expiration_date'=> $id_expiration_date,
 		);
 
 		if (!empty($profile_picture)) {
@@ -467,7 +545,6 @@ class Public_Controller extends Global_Controller {
 		$response = curl_exec($curl);
 		
 		curl_close($curl);
-		
 		$response = json_decode($response);
 
 		if (isset($response->response)) {

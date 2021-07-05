@@ -231,36 +231,6 @@
 				<div class="col-xl-12">
 					<div class="card">
 						<div class="card-header">
-							Business Information
-						</div>
-						<div class="card-body">
-							<div class="row">
-								<div class="col-xl-4">
-									<div class="form-group">
-										<label>Business Types <span class="text-danger">*</span></label>
-										<?=isset($biz_type) ? $biz_type : ""?>
-										<span class="text-danger"><?=form_error('biz-type')?></span>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xl-12">
-									<div class="form-group">
-										<label>Upload Documents <span class="text-danger">*</span></label>
-										<input type="file" class="form-control-file" id="files" name="files[]" accept=".jpg,.jpeg,.JPG,.JPEG,.PNG,.png,.bmp,.docx,.doc,.pdf,.xlsx" multiple>
-										<span class="text-danger">Please upload the ff. files:<br></span>
-										<label class="biz-type-desc text-danger">Valid ID's and DTI or Mayor's Permit</label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div><br>
-			<div class="row">
-				<div class="col-xl-12">
-					<div class="card">
-						<div class="card-header">
 							Identification
 						</div>
 						<div class="card-body">
@@ -309,14 +279,15 @@
 							</div>
 							<br>
 							<div class="row">
-								<div class="col-xl-12">
+								<div class="col-xl-4">
 									<div class="form-group">
-										<input type="checkbox" id="enroll-as-agent" name="enroll-as-agent" value="1" <?=isset($post["enroll-as-agent"]) ? ($post["enroll-as-agent"] == 1 ? 'checked' : "" ): ""?>>
-										<label for="status">&nbsp; Enroll me as an Agent as well</label>
-										<span class="text-danger"><?=form_error('enroll-as-agent')?></span>
+										<label>Agent Referral Code <span class="text-danger">*</span></label>
+										<input name="agent-code" class="form-control" placeholder="Agent Referral Code" value="<?=isset($post['agent-code']) ? $post['agent-code'] : ""?>">
+										<span class="text-danger"><?=form_error('agent-code')?></span>
 									</div>
 								</div>
 							</div>
+							<br>
 							<div class="row">
 								<div class="col-xl-12">
 									<div class="form-group">

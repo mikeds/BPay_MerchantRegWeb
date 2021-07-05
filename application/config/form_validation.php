@@ -97,11 +97,6 @@ switch( strtolower(get_controller()) ) {
 					'label' => 'State/Province',
 					'rules'	=> 'trim|xss_clean|required'
 				),
-				// array( 	
-				// 	'field' => 'country',
-				// 	'label' => 'Country/Region',
-				// 	'rules'	=> 'trim|xss_clean|required'
-				// ),
 				array( 	
 					'field' => 'postal-code',
 					'label' => 'Postal Code',
@@ -118,16 +113,6 @@ switch( strtolower(get_controller()) ) {
 					'rules'	=> 'trim|xss_clean|required'
 				),
 				array( 	
-					'field' => 'now',
-					'label' => 'Nature of Work',
-					'rules'	=> 'trim|xss_clean|required'
-				),
-				array( 	
-					'field' => 'biz-type',
-					'label' => 'Business Type',
-					'rules'	=> 'trim|xss_clean|required'
-				),
-				array( 	
 					'field' => 'id-type',
 					'label' => 'ID Type',
 					'rules'	=> 'trim|xss_clean|required'
@@ -140,6 +125,11 @@ switch( strtolower(get_controller()) ) {
 				array( 	
 					'field' => 'exp-date',
 					'label' => 'ID Expiration Date',
+					'rules'	=> 'trim|xss_clean|required'
+				),
+				array( 	
+					'field' => 'agent-code',
+					'label' => 'Agent Referral Code',
 					'rules'	=> 'trim|xss_clean|required'
 				),
 				array( 	

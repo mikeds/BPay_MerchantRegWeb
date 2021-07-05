@@ -51,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $route["default_controller"]        = "public/Registration";
+$route['otp-validation/(:any)']             = "public/Registration/otp_validation/$1";
 
 $route['404_override'] = 'public/Error_404';
 $route['translate_uri_dashes'] = FALSE;
