@@ -122,6 +122,7 @@ class Registration extends Public_Controller {
 					if ($response['error']) {
 						$this->_data['notification'] = $this->generate_notification('warning', $response['error_description']);
 						goto end;
+<<<<<<< HEAD
 					}else{
 						$last_user = array(
 							'user_type' 		=> 2, // client
@@ -131,6 +132,49 @@ class Registration extends Public_Controller {
 						redirect('http://developer.globelabs.com.ph/dialog/oauth/AMM8H69MMeCb5Tp4nBiMnGC8kM7MHMba');
 					} 
 
+=======
+					} else {
+						if($enroll_as_agent == 1){
+							$agent_enroll_response = $this->set_register_agent(
+								$profile_picture,
+								$first_name,
+								$middle_name,
+								$last_name,
+								$email_address,
+								$password,
+								$mobile_no,
+								$dob,
+								$pob,
+								$gender,
+								$house_no,
+								$street,
+								$barangay,
+								$city,
+								$country_id,
+								$province_id,
+								$postal_code,
+								$sof,
+								$now,
+								$id_type,
+								$id_no,
+								$id_expiration_date,
+								$id_front,
+								$id_back
+							);
+								$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered to merchant and agent account!"));
+								redirect($this->_data['form_url']);
+						}else{
+							$last_user = array(
+								'user_type' 		=> 1, // merchant
+								'user_phone_no'		=> $mobile_no
+							);
+							$this->last_inserted_user->insert($last_user);
+							redirect('http://developer.globelabs.com.ph/dialog/oauth/AMM8H69MMeCb5Tp4nBiMnGC8kM7MHMba');
+							//$this->session->set_flashdata('notification', $this->generate_notification('success', isset($response['message']) ? $response['message'] : "Successfully registered!"));
+						}	
+						
+					}
+>>>>>>> 6c8c51c11e6a10a8374f64be18048200731c1bd1
 				}
 
 				$this->_data['notification'] = $this->generate_notification('warning', "Unable to save registration to server!");
@@ -197,12 +241,20 @@ class Registration extends Public_Controller {
 		$this->_data['form_url']		= base_url().'otp-validation/'.$mobile_no;
 		$this->_data['notification'] 	= $this->session->flashdata('notification');
 		$this->_data['title']  = "OTP Validation";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6c8c51c11e6a10a8374f64be18048200731c1bd1
 		$otp_code = $this->input->post('otp-code');
 		if(empty($otp_code)){
 			$response = $this->otp_request(
 				$mobile_no,
 				'reg',
+<<<<<<< HEAD
 				'client'
+=======
+				'merchant'
+>>>>>>> 6c8c51c11e6a10a8374f64be18048200731c1bd1
 			); 
 		}
 		if($_POST){

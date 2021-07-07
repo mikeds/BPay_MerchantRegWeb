@@ -44,7 +44,10 @@
 				<div class="col-xl-4">
 					<div class="form-group">
 						<button type="submit" class="btn btn-block btn-warning"><b>SUBMIT</b></button>
+<<<<<<< HEAD
 						<a id="dialog_trigger" href="#">Open My Dialog</a>
+=======
+>>>>>>> 6c8c51c11e6a10a8374f64be18048200731c1bd1
 					</div>
 				</div>
 			</div>
